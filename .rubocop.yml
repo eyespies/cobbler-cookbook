@@ -1,9 +1,30 @@
----
-inherit_from: .rubocop_todo.yml
-
 AllCops:
   Exclude:
-    - 'bin/**/*'
-    - 'vendor/**/*'
-    - 'test/**/*'
-    - 'spec/**/*'
+    - 'Vagrantfile'
+  DisplayCopNames: true
+  TargetRubyVersion: 2.4
+
+AlignParameters:
+  Enabled: false
+
+Encoding:
+  Enabled: false
+
+FrozenStringLiteralComment:
+  Enabled: false
+
+LineLength:
+  Max: 180
+
+StringLiterals:
+  Enabled: false
+
+Layout/SpaceBeforeFirstArg:
+  Exclude:
+    - 'metadata.rb'
+
+Metrics/MethodLength:
+  Max: 35
+
+Metrics/BlockLength:
+  Max: 35

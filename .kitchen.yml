@@ -1,15 +1,22 @@
 ---
 driver:
   name: vagrant
+  network:
+    # The source / destination port need to be the same to properly test redirects and such.
+    - ["forwarded_port", {guest: 80, host: 8080, auto_correct: true}]
+    - ["forwarded_port", {guest: 443, host: 8443, auto_correct: true}]
+  customize:
+    memory: 2048
+    cpus: 1
 
 provisioner:
   name: chef_zero
+  require_chef_omnibus: <%= ENV.has_key?('CHEF_VERSION') ? ENV['CHEF_VERSION'] : true %>
+  # log_level: info
 
 platforms:
   - name: ubuntu-12.04
     provisioner:
-      name: chef_zero_berks_env
-      require_chef_omnibus: '11.18.12'
       environments_path: 'environments'
       client_rb:
         environment: 'chef11'
@@ -18,13 +25,10 @@ platforms:
   - name: ubuntu-14.04
     run_list:
       - 'recipe[apt::default]'
-  - name: centos-6.7
-  - name: centos-7.2
-  - name: centos-5.11
-    attributes:
-      cobbler:
-        packages:
-          - cobbler
+  - name: centos-7.3
+  - name: oracle-7.3
+    driver_config:
+      box: bento/oracle-7.3
 
 suites:
   - name: default
@@ -39,3 +43,11 @@ suites:
       - 'recipe[cobblerd::web]'
     excludes:
       - centos-5.11
+  - name: create-distro
+    run_list:
+      - 'recipe[cobblerd::default]'
+      - 'recipe[cobblerd_test::create_objects]'
+      - 'recipe[cobblerd_test::delete_objects]'
+    attributes:
+      cobblerd:
+        iso_test_hostname: <%= ENV.has_key?('COBBLER_ISO_SOURCE') ? ENV['COBBLER_ISO_SOURCE'] : '' %>

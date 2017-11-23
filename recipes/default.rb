@@ -2,26 +2,18 @@
 # Cookbook Name:: cobblerd
 # Recipe:: default
 #
-# Copyright (C) 2014 Bloomberg Finance L.P.
+# Copyright:: 2017, Justin Spies, All Rights Reserved
 #
-include_recipe 'yum-epel::default' if node[:platform_family] == "rhel"
-include_recipe 'apt::default' if node[:platform_family] == "debian"
-
-package 'cobbler'
-
-service 'cobbler' do
-  case node['platform']
-    when 'centos','redhat','fedora'
-      if node['platform_version'].to_i >= 6
-        service_name 'cobblerd'
-      end
-  end
-  action [:enable, :start]
-  supports restart: true
-end
-
 # define cobbler sync for actions which need it
 bash 'cobbler-sync' do
-  command 'cobbler sync'
+  code 'while ! cobbler repo list ; do sleep 1 ; done ; cobbler sync'
   action :nothing
 end
+
+include_recipe 'cobblerd::repos'
+include_recipe 'cobblerd::nginx' if node['cobblerd']['http_service_name'] == 'nginx'
+include_recipe 'cobblerd::apache' if node['cobblerd']['http_service_name'] == 'httpd'
+include_recipe 'cobblerd::server'
+# This relies on certain cobbler files having been installed so it must be run after both the 'nginx' 
+# and the 'server' recipes.
+include_recipe 'cobblerd::uwsgi' if node['cobblerd']['http_service_name'] == 'nginx'

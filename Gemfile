@@ -1,17 +1,21 @@
+# encoding: utf-8
+# frozen_string_literal: true
+
 source 'https://rubygems.org'
 
-gem 'berkshelf'
+gem 'berkshelf', '~> 5.2.0'
 gem 'chef-rewind'
-gem 'rake'
-gem 'foodcritic'
 gem 'coveralls', require: true
-gem 'rspec'
-gem 'rubocop'
+gem 'foodcritic'
+gem 'rake'
+gem 'rspec', '~> 3.5.0'
+gem 'rspec-mocks', '~> 3.5.0'
+gem 'rubocop', '~> 0.49.1'
 
 group :integration, :test do
-  gem 'test-kitchen'
-  gem 'kitchen-vagrant'
-  gem 'kitchen-chef_zero_berks_env'
-  gem 'serverspec'
   gem 'chefspec'
+  gem 'kitchen-chef_zero_berks_env'
+  gem 'kitchen-vagrant'
+  gem 'serverspec'
+  gem 'test-kitchen'
 end

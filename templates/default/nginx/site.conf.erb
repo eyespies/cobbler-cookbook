@@ -1,0 +1,49 @@
+server {
+    listen 80 default;
+    listen [::]:80 default;
+    server_name <%= node['cobblerd']['http']['server_name'] %> _;
+
+    access_log /var/log/nginx/cobbler.access.log;
+    error_log  /var/log/nginx/cobbler.error.log;
+
+    location ~ ^/cblr(?!/svc/)(.*)?$ {
+        alias /var/www/cobbler/$1;
+    }
+
+    location ~ ^/cobbler_track/(.*)?$ {
+        alias /var/www/cobbler/$1;
+    }
+
+    location /cobbler {
+        alias /var/www/cobbler;
+    }
+
+    location /cblr/svc/ {
+        include uwsgi_params;
+        uwsgi_pass unix:/run/cobbler_svc.sock;
+    }
+
+    location /cobbler_api {
+        rewrite ^/cobbler_api/?(.*) /$1 break;
+        proxy_pass http://127.0.0.1:25151;
+    }
+
+    location /cobbler_webui_content {
+        alias /var/www/cobbler_webui_content;
+    }
+
+<% if node['cobblerd']['http']['ssl_certificate_file'].nil? -%>
+    location /cobbler_web {
+        rewrite ^/cobbler_web/?(.*) /$1 break;
+        include uwsgi_params;
+        uwsgi_pass unix:/run/cobbler_web.sock;
+    }
+
+    # redirect requests for / to the Web UI
+    rewrite ^/$ http://<%= node['cobblerd']['http']['server_name'] %>/cobbler_web permanent;
+<% else -%>
+    # only force-redirect the web ui to HTTPS
+    rewrite ^/$ https://<%= node['cobblerd']['http']['server_name'] %>/cobbler_web permanent;
+    rewrite ^/cobbler_web https://<%= node['cobblerd']['http']['server_name'] %>$request_uri? permanent;
+<% end -%>
+}

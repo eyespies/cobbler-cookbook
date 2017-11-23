@@ -1,9 +1,44 @@
+#
+# Cookbook:: cobblerd
+# Spec:: default
+#
+# Copyright:: 2017, The Authors, All Rights Reserved.
+
 require 'spec_helper'
 
-describe_recipe 'cobblerd::default' do
-  it { expect(chef_run).to include_recipe('apt::default') }
-  it { expect(chef_run).not_to include_recipe('yum-epel::default') }
-  it { expect(chef_run).to install_package('cobbler') }
-  it { expect(chef_run).to enable_service('cobbler') }
-  it { expect(chef_run).to start_service('cobbler') }
+describe 'cobblerd::default' do
+  let(:recipes) do
+    %w[cobblerd::repos cobblerd::server cobblerd::nginx cobblerd::uwsgi]
+  end
+
+  platforms.each do |platform, details|
+    versions = details['versions']
+    versions.each do |version|
+      context "On #{platform} #{version}" do
+        before do
+          recipes.each do |recipe|
+            allow_any_instance_of(Chef::Recipe).to receive(:include_recipe).with(recipe)
+          end
+        end
+
+        let(:chef_run) do
+          runner = ChefSpec::SoloRunner.new(platform: platform, version: version)
+          runner.node.override['environment'] = 'dev'
+          runner.converge(described_recipe)
+        end
+
+        it 'should define the cobbler-sync command' do
+          resource = chef_run.bash('cobbler-sync')
+          expect(resource).to do_nothing
+        end
+
+        it 'should require the other recipes' do
+          recipes.each do |recipe|
+            expect_any_instance_of(Chef::Recipe).to receive(:include_recipe).with(recipe)
+          end
+          chef_run
+        end
+      end
+    end
+  end
 end
