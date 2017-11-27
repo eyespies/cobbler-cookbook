@@ -39,6 +39,11 @@ unless node['cobblerd']['http']['ssl_certificate_file'].nil?
   nginx_site "#{node['cobblerd']['http']['server_name']}-ssl" do
     action :enable
   end
+else
+  log 'No custom SSL certificate file was specified, not enabling SSL' do
+    level :warning
+    action :write
+  end
 end
 
 service 'nginx' do
