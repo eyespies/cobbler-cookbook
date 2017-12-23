@@ -9,7 +9,7 @@ if defined?(ChefSpec)
   end
 
   def download_cobbler_iso(iso_name)
-    ChefSpec::Matchers::ResourceMatcher.new(:cobbler_iso, :create, image_name)
+    ChefSpec::Matchers::ResourceMatcher.new(:cobbler_iso, :create, iso_name)
   end
 
   def import_cobbler_image(image_name)
