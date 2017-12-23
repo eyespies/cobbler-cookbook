@@ -17,7 +17,9 @@ describe 'cobblerd::server' do
         let(:chef_run) do
           runner = ChefSpec::SoloRunner.new(platform: platform, version: version)
           runner.node.override['environment'] = 'dev'
-          runner.converge(described_recipe)
+          runner.converge(described_recipe) do
+            runner.resource_collection.insert(Chef::Resource::Service.new('nginx', runner.run_context))
+          end
         end
 
         it 'should install the required packages' do
