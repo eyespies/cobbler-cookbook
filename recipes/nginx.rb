@@ -27,7 +27,12 @@ nginx_site node['cobblerd']['http']['server_name'] do
   action :enable
 end
 
-unless node['cobblerd']['http']['ssl_certificate_file'].nil?
+if node['cobblerd']['http']['ssl_certificate_file'].nil?
+  log 'No custom SSL certificate file was specified, not enabling SSL' do
+    level :warn
+    action :write
+  end
+else
   template "/etc/nginx/sites-available/#{node['cobblerd']['http']['server_name']}-ssl" do
     source 'nginx/ssl-site.conf.erb'
     owner node['nginx']['user']
@@ -38,11 +43,6 @@ unless node['cobblerd']['http']['ssl_certificate_file'].nil?
 
   nginx_site "#{node['cobblerd']['http']['server_name']}-ssl" do
     action :enable
-  end
-else
-  log 'No custom SSL certificate file was specified, not enabling SSL' do
-    level :warning
-    action :write
   end
 end
 

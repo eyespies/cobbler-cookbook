@@ -2,9 +2,6 @@
 provides :cobbler_repo
 resource_name :cobbler_repo
 
-# Actions that we support.  Must be stated in our provider action :create do.
-actions :create, :delete
-
 # Our default action, can be anything.
 default_action :create if defined?(default_action)
 
@@ -30,11 +27,10 @@ property :proxy_url, kind_of: String, required: false, desired_state: false, def
 property :rpm_list, kind_of: Array, required: false, desired_state: false, default: nil
 property :yum_options, kind_of: Hash, required: false, desired_state: false, default: nil
 
-
 # This is a standard ruby accessor, use this to set flags for current state.
 attr_accessor :exists
 
-action :create do
+action :create do # rubocop:disable Metrics/BlockLength
   validate_input
 
   # Setup command with known required attributes
@@ -119,8 +115,8 @@ load_current_value do
     comment data['comment']
     createrepo_flags data['createrepo_flags']
     env_variables data['environment']
-    keep_updated data['keep_updated'].nil? || data['keep_updated'] == 'false' ? false : true
-    mirror_locally data['mirror_locally'].nil? || data['mirror_locally'] == 'false' ? false : true
+    keep_updated data['keep_updated']
+    mirror_locally data['mirror_locally']
     mirror_url data['mirror']
     os_breed data['breed']
     owners data['owners']
@@ -134,7 +130,7 @@ end
 #------------------------------------------------------------
 # Queries Cobbler to determine if a specific repo exists.
 #------------------------------------------------------------
-def exists?
+def exists? # rubocop:disable Metrics/AbcSize
   Chef::Log.debug("Checking if repository '#{name}' already exists")
   if name.nil?
     false
@@ -149,11 +145,13 @@ def exists?
   end
 end
 
-def load_cobbler_repo # rubocop:disable Metrics/AbcSize
+def load_cobbler_repo
   retval = {}
   config_file = ::File.join('/var/lib/cobbler/config/repos.d/', "#{name}.json")
   if ::File.exist?(config_file)
     retval = JSON.parse(::File.read(config_file))
+    retval['keep_updated'] = false unless retval.key?('keep_updated')
+    retval['mirror_locally'] = false unless retval.key?('mirror_locally')
   else
     Chef::Log.error("Configuration file #{config_file} needed to load the existing repo does not exist")
   end
@@ -179,14 +177,14 @@ action_class do
   #------------------------------------------------------------
   # Validates that the provided inputs do not include any reserved words or separate characters
   #------------------------------------------------------------
-  def validate_input
+  def validate_input # rubocop:disable Metrics/AbcSize
     unless new_resource.nil? || architectures.include?(new_resource.architecture)
       msg = "Invalid cobbler repo architecture #{new_resource.architecture} -- "
       msg += "must be one of #{architectures.join(',')}"
       Chef::Application.fatal!(msg)
     end
 
-    unless new_resource.nil? || breeds.include?(new_resource.os_breed)
+    unless new_resource.nil? || breeds.include?(new_resource.os_breed) # rubocop:disable Style/GuardClause
       msg = "Invalid cobbler repo breed #{new_resource.os_breed} -- "
       msg += "must be one of #{breeds.join(',')}"
       Chef::Application.fatal!(msg)

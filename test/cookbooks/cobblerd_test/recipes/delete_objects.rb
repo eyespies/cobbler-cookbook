@@ -10,13 +10,10 @@
 
 checksums = { '6.9' => 'd27cf37a40509c17ad70f37bc743f038c1feba00476fe6b69682aa424c399ea6' }
 
-
 # Only delete the one ISO (7.3) so that a review of the web UI allows developers to see that 6.9 was downloaded
 # and created.
-checksums.each do |vers, sha256|
+checksums.each do |vers, _sha256| # rubocop:disable Metrics/BlockLength
   # Variable setup.
-  osmajor = vers.gsub(/\.[0-9].*/, '')
-
   dl_hostname = if node['cobblerd'].attribute?('iso_test_hostname') && !node['cobblerd']['iso_test_hostname'].empty?
                   node['cobblerd']['iso_test_hostname']
                 else
@@ -24,21 +21,14 @@ checksums.each do |vers, sha256|
                 end
   Chef::Log.info("Downloading ISOs from #{dl_hostname}")
 
-  if osmajor == '7'
-    release = vers.gsub(/[0-9]*\.[0-9]*\.([0-9]*)/, '\1')
-    source_file = "CentOS-#{osmajor}-x86_64-DVD-#{release}.iso"
-  else
-    source_file = "CentOS-#{vers}-x86_64-bin-DVD1.iso"
-  end
-
   # Delete the existing profile.
   cobbler_system "system-#{vers}-delete" do
-  #  profile "centos-#{vers}-minimal"
+    # profile "centos-#{vers}-minimal"
     action :delete
   end
 
   cobbler_system "system-#{vers}-delete-missing" do
-  #  profile "centos-#{vers}-minimal"
+    # profile "centos-#{vers}-minimal"
     action :delete
   end
 

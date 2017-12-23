@@ -1,4 +1,3 @@
-# rubocop:disable Style/GuardClause,Metrics/AbcSize
 provides :cobbler_iso
 resource_name :cobbler_iso
 

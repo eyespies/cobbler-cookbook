@@ -2,9 +2,6 @@
 provides :cobbler_system
 resource_name :cobbler_system
 
-# Actions that we support.  Must be stated in our provider action :create do.
-actions :create, :delete
-
 # Our default action, can be anything.
 default_action :create if defined?(default_action)
 
@@ -70,11 +67,11 @@ property :virtualization_type, kind_of: String, required: false, desired_state: 
 # This is a standard ruby accessor, use this to set flags for current state.
 attr_accessor :exists
 
-action :create do
+action :create do # rubocop:disable Metrics/BlockLength
   # TODO: Add check to ensure that the specified profile exists.
   validate_input
 
-  if !exists?
+  unless exists?
     # Setup command with known required attributes. Since only name is required to delete, that is all we're using.
     system_command = "cobbler system add --name=#{new_resource.name}"
 
@@ -183,7 +180,7 @@ action :delete do
   end
 end
 
-load_current_value do
+load_current_value do # rubocop:disable Metrics/BlockLength
   if exists?
     data = load_cobbler_system
 
@@ -260,7 +257,7 @@ end
 #------------------------------------------------------------
 # Queries Cobbler to determine if a specific image exists.
 #------------------------------------------------------------
-def exists?
+def exists? # rubocop:disable Metrics/AbcSize
   Chef::Log.debug("Checking if image '#{name}' already exists")
   if name.nil?
     false
@@ -276,7 +273,7 @@ def exists?
   end
 end
 
-def load_cobbler_system # rubocop:disable Metrics/AbcSize
+def load_cobbler_system
   retval = {}
   config_file = ::File.join('/var/lib/cobbler/config/systems.d/', "#{name}.json")
   if ::File.exist?(config_file)

@@ -2,9 +2,7 @@
 provides :cobbler_profile
 resource_name :cobbler_profile
 
-actions :create, :delete
-
-default_action :create
+default_action :create if defined?(default_action)
 
 property :name, name_attribute: true, kind_of: String, required: true
 
@@ -109,7 +107,7 @@ load_current_value do
     # - template_remote_kickstarts
 
     # TODO: Use the 'send' feature / function to programatically (and dynamically) do this.
-    auto_boot data['virt_auto_boot'].nil? || data['virt_auto_boot'] == 0 ? false : true
+    auto_boot data['virt_auto_boot'].zero? ? false : true
     boot_files data['boot_files']
     bridge data['virt_bridge']
     comment data['comment']
@@ -119,8 +117,8 @@ load_current_value do
     disk_path data['virt_path']
     disk_size data['virt_file_size']
     distro data['distro']
-    enable_gpxe data['enable_gpxe'].nil? || data['virt_auto_boot'] == 0 ? false : true
-    enable_pxe_menu data['enable_menu'].nil? || data['virt_auto_boot'] == 0 ? false : true
+    enable_gpxe data['enable_gpxe']
+    enable_pxe_menu data['enable_pxe_menu']
     fetchable_files data['fetchable_files']
     internal_proxy data['proxy']
     kernel_options data['kernel_options']
@@ -139,8 +137,7 @@ load_current_value do
     repos data['repos']
     server_override data['server']
     template_files data['template_files']
-    template_remote_kickstarts data['template_remote_kickstarts'].nil? || data['template_remote_kickstarts'] == 0 ?
-                                false : true
+    template_remote_kickstarts data['template_remote_kickstarts'].zero? ? false : true
     virtualization_type data['virt_type']
   end
 end
@@ -148,7 +145,7 @@ end
 #------------------------------------------------------------
 # Queries Cobbler to determine if a specific repo exists.
 #------------------------------------------------------------
-def exists?
+def exists? # rubocop:disable Metrics/AbcSize
   Chef::Log.info("Checking if repository '#{name}' already exists")
   if name.nil?
     false
@@ -163,11 +160,12 @@ def exists?
   end
 end
 
-def load_cobbler_profile # rubocop:disable Metrics/AbcSize
+def load_cobbler_profile
   retval = {}
   config_file = ::File.join('/var/lib/cobbler/config/profiles.d/', "#{name}.json")
   if ::File.exist?(config_file)
     retval = JSON.parse(::File.read(config_file))
+    retval['virt_auto_boot'] = '0' unless retval.key?('virt_auto_boot')
   else
     Chef::Log.error("Configuration file #{config_file} needed to load the existing profile does not exist")
   end
@@ -176,8 +174,6 @@ def load_cobbler_profile # rubocop:disable Metrics/AbcSize
 end
 
 action_class do
-  #------------------------------------------------------------
-  # Defines the allowable architectures, used for input validation.
   #------------------------------------------------------------
   # Defines the allowable architectures, used for input validation.
   #------------------------------------------------------------
@@ -195,14 +191,14 @@ action_class do
   #------------------------------------------------------------
   # Validates that the provided inputs do not include any reserved words or separate characters
   #------------------------------------------------------------
-  def validate_input
+  def validate_input # rubocop:disable Metrics/AbcSize
     unless new_resource.nil? || architectures.include?(new_resource.architecture)
       msg = "Invalid cobbler repo architecture #{new_resource.architecture} -- "
       msg += "must be one of #{architectures.join(',')}"
       Chef::Application.fatal!(msg)
     end
 
-    unless new_resource.nil? || breeds.include?(new_resource.os_breed)
+    unless new_resource.nil? || breeds.include?(new_resource.os_breed) # rubocop:disable Style/GuardClause
       msg = "Invalid cobbler repo breed #{new_resource.os_breed} -- "
       msg += "must be one of #{breeds.join(',')}"
       Chef::Application.fatal!(msg)

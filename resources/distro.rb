@@ -1,9 +1,8 @@
+# rubocop:disable Metrics/BlockLength
+
 # Base Resource
 provides :cobbler_distro
 resource_name :cobbler_distro
-
-# Actions that we support.  Must be stated in our provider action :create do.
-actions :create, :delete
 
 # Our default action, can be anything.
 default_action :create if defined?(default_action)
@@ -44,7 +43,7 @@ attr_accessor :dependencies
 action :create do
   validate_input
 
-  if !exists?
+  unless exists?
     unless architectures.include?(new_resource.architecture)
       raise "The specified architecture (#{new_resource.architecture}) is not one of #{architectures.join(',')}"
     end
@@ -134,7 +133,8 @@ action :import do
   validate_input
 
   # Only import the distro if it doesn't exist
-  if !exists?
+  unless exists?
+
   end
 end
 
@@ -192,7 +192,8 @@ end
 #------------------------------------------------------------
 # Queries Cobbler to determine if a specific distro exists.
 #------------------------------------------------------------
-def exists?
+# TODO: Fix Metrics/AbcSize
+def exists? # rubocop:disable Metrics/AbcSize
   Chef::Log.debug("Checking if distro '#{name}' already exists")
   if name.nil?
     false
@@ -225,7 +226,7 @@ def dependencies?
   result.positive?
 end
 
-def load_cobbler_distro # rubocop:disable Metrics/AbcSize
+def load_cobbler_distro
   retval = {}
   config_file = ::File.join('/var/lib/cobbler/config/distros.d/', "#{name}.json")
   if ::File.exist?(config_file)
@@ -238,8 +239,6 @@ def load_cobbler_distro # rubocop:disable Metrics/AbcSize
 end
 
 action_class do
-  #------------------------------------------------------------
-  # Defines the allowable architectures, used for input validation.
   #------------------------------------------------------------
   # Defines the allowable architectures, used for input validation.
   #------------------------------------------------------------
@@ -257,14 +256,15 @@ action_class do
   #------------------------------------------------------------
   # Validates that the provided inputs do not include any reserved words or separate characters
   #------------------------------------------------------------
-  def validate_input
+  # TODO: Fix Metrics/AbcSize
+  def validate_input # rubocop:disable Metrics/AbcSize
     unless new_resource.nil? || architectures.include?(new_resource.architecture)
       msg = "Invalid cobbler repo architecture #{new_resource.architecture} -- "
       msg += "must be one of #{architectures.join(',')}"
       Chef::Application.fatal!(msg)
     end
 
-    unless new_resource.nil? || breeds.include?(new_resource.os_breed)
+    unless new_resource.nil? || breeds.include?(new_resource.os_breed) # rubocop:disable Style/GuardClause
       msg = "Invalid cobbler repo breed #{new_resource.os_breed} -- "
       msg += "must be one of #{breeds.join(',')}"
       Chef::Application.fatal!(msg)

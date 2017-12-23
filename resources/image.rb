@@ -2,10 +2,6 @@
 provides :cobbler_image
 resource_name :cobbler_image
 
-# Required for 'import', but not 'delete', so not marking as required.
-# Actions that we support.  Must be stated in our provider action :create do.
-actions :create, :import, :delete
-
 # Our default action, can be anything.
 default_action :create if defined?(default_action)
 
@@ -45,7 +41,7 @@ attr_accessor :children
 action :create do
   validate_input
 
-  if !exists?
+  unless exists?
     command = "cobbler image add --name='#{new_resource.name}'"
     command = "#{command} --breed='#{new_resource.os_breed}'" unless new_resource.os_breed.nil?
     command = "#{command} --arch='#{new_resource.architecture}'" unless new_resource.architecture.nil?
@@ -81,7 +77,6 @@ action :import do
     only_if { ::File.exist? new_resource.target }
     not_if "mount | grep '#{mount_regex}'"
   end
-
 
   mount "#{new_resource.name}-image" do
     mount_point mount_point
@@ -134,7 +129,7 @@ load_current_value do
 
     # TODO: Use the 'send' feature / function to programatically (and dynamically) do this.
     architecture data['arch']
-    auto_boot data['virt_auto_boot'].nil? || data['virt_auto_boot'] == '0' ? false : true
+    auto_boot data['virt_auto_boot'].zero? ? false : true
     bridge data['virt_bridge']
     # NOTE: Checksum is not a Cobbler property; it is for use with the remote_file from the import action.
     comment data['comment']
@@ -172,7 +167,7 @@ def exists?
     Chef::Log.debug("Standard out from 'image find' is #{image_find.stdout.chomp}")
 
     # True if the value in stdout matches our name
-    (image_find.stdout.chomp == "#{name}")
+    (image_find.stdout.chomp == name)
   end
 end
 
@@ -195,15 +190,16 @@ def dependencies?
     Chef::Log.debug("Standard out from 'profile list' is #{profile_find.stdout.chomp}")
 
     # True if the value in stdout matches our name
-    (distro_find.stdout.chomp == "#{fullname}") || (profile_find.stdout.chomp == "#{fullname}")
+    (distro_find.stdout.chomp == fullname) || (profile_find.stdout.chomp == fullname)
   end
 end
 
-def load_cobbler_image # rubocop:disable Metrics/AbcSize
+def load_cobbler_image
   retval = {}
   config_file = ::File.join('/var/lib/cobbler/config/images.d/', "#{name}.json")
   if ::File.exist?(config_file)
     retval = JSON.parse(::File.read(config_file))
+    retval['virt_auto_boot'] = 0 unless retval.key?('virt_auto_boot')
   else
     Chef::Log.error("Configuration file #{config_file} needed to load the existing image does not exist")
   end

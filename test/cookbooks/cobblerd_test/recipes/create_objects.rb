@@ -11,7 +11,7 @@
 checksums = { '6.9' => 'd27cf37a40509c17ad70f37bc743f038c1feba00476fe6b69682aa424c399ea6',
               '7.4.1708' => 'ec7500d4b006702af6af023b1f8f1b890b6c7ee54400bb98cef968b883cd6546' }
 
-checksums.each do |vers, sha256|
+checksums.each do |vers, sha256| # rubocop:disable Metrics/BlockLength
   # Variable setup.
   osmajor = vers.gsub(/\.[0-9].*/, '')
   next unless osmajor == '6'
@@ -125,5 +125,4 @@ checksums.each do |vers, sha256|
     profile "profile-#{vers}-leave"
     action :create
   end
-
 end
