@@ -1,5 +1,5 @@
-# kvm_server CHANGELOG
-This file lists the changes made for each version of the kvm_server cookbook.
+# cobblerd CHANGELOG
+This file lists the changes made for each version of the cobblerd cookbook.
 
 ## Version 1.0.2
 - Justin Spies - Updated nginx configuration to include the 'root' path
