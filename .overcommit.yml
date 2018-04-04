@@ -26,8 +26,6 @@ PreCommit:
   FoodCritic:
     enabled: true
     description: 'Checking against foodcritic known issues'
-  Mdl:
-    enabled: true
   XmlLint:
     enabled: true
   YamlLint:
