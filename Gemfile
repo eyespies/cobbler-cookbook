@@ -27,14 +27,12 @@ end
 group :lint do
   gem 'foodcritic', '~> 12.3.0'
   gem 'overcommit', '~> 0.43.0'
-  gem 'rspec', '~> 3.7.0' # rubocop:disable Bundler/DuplicatedGem
   gem 'rubocop', '~> 0.52.0'
 end
 
 group :unit do
   gem 'berkshelf', '~> 6.3.0'
   gem 'chefspec', '~> 7.1.0'
-  gem 'rspec', '~> 3.7.0' # rubocop:disable Bundler/DuplicatedGem
 end
 
 group :kitchen_common do

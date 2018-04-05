@@ -1,20 +1,33 @@
 ---
+sudo: required
 language: ruby
-script: bin/rspec
+bundler_args: "--without development"
+dist: trusty
+cache: bundler
+
+# See https://github.com/dev-sec/chef-os-hardening/blob/master/.travis.yml for some advanced examples
+
 rvm:
   - 2.3
   - 2.4
+
 branches:
   only:
     - master
+
 builder_args: --jobs 7
-notifications:
-  irc:
-    channels:
-      - 'chat.freenode.net#bloomberg'
-    use_notice: true
-    skip_join: true
-    template:
-      - "%{message} (%{author}): %{build_url}"
+
+before_install:
+  - gem update --system # see https://github.com/bundler/bundler/issues/5357
+
 matrix:
   fast_finish: true
+
+script:
+  -  bundle exec rake kitchen
+
+matrix:
+  include:
+    - env: UNIT_AND_LINT=1
+      script:
+        - bundle exec rake lint spec
