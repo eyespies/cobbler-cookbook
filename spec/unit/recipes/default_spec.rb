@@ -2,7 +2,7 @@
 # Cookbook:: cobblerd
 # Spec:: default
 #
-# Copyright:: 2017, The Authors, All Rights Reserved.
+# Copyright:: 2017-2018, Phoenix Specialty Manufacturing Company, All Rights Reserved.
 
 require 'spec_helper'
 
