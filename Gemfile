@@ -14,6 +14,7 @@ gem 'inspec', '~> 2.2.0'
 
 group :test do
   gem 'bundler', '~> 1.16.0'
+  gem 'gherkin', '~> 5.1.0'
   gem 'minitest', '~> 5.11.0'
   gem 'rake', '~> 12.3.0'
   gem 'simplecov', '~> 0.16.0'
