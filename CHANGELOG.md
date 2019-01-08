@@ -3,6 +3,7 @@ This file lists the changes made for each version of the cobblerd cookbook.
 
 ## Version 1.0.5
 - Justin Spies - (fix) specify correct version of the uwsgi-plugin-python package
+- Justin Spies - (fix) address Fauxhai OS version deprecation warning
 
 ## Version 1.0.4
 - Justin Spies - (fix) use fixed version of Gherkin to avoid "LoadError: cannot load such file -- cucumber/core/gherkin/tag_expression"
