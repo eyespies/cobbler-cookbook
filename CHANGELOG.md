@@ -1,6 +1,17 @@
 # cobblerd CHANGELOG
 This file lists the changes made for each version of the cobblerd cookbook.
 
+## Version 1.0.5
+- Justin Spies - (fix) specify correct version of the uwsgi-plugin-python package
+
+## Version 1.0.4
+- Justin Spies - (fix) use fixed version of Gherkin to avoid "LoadError: cannot load such file -- cucumber/core/gherkin/tag_expression"
+- Justin Spies - (doc) update copyright
+- Justin Spies - (feature) use standardized CI/CD process
+- Justin Spies - (fix) switching to alternate build configuration since the old one did not work
+- Justin Spies - (fix) install RSPEC via *bundler*
+- Justin Spies - (fix) update to use newer Ruby that is part of Chef
+
 ## Version 1.0.3
 - Justin Spies - Disable TLS 1.0 and TLS 1.1
 - Justin Spies - [Add STS header](https://www.nginx.com/blog/http-strict-transport-security-hsts-and-nginx/)

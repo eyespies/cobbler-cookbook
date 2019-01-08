@@ -5,7 +5,14 @@
 #
 # Copyright:: 2017, Specialty Manufacturing Company of South Carolina, All Rights Reserved
 package 'uwsgi'
-package 'uwsgi-plugin-python'
+
+# TODO: Upgrade to Python 3.x? Example output (extraneous listings removed):
+# [root@cobbler-prod-01  ~] :) yum list | grep ^uwsgi-plugin-python
+# uwsgi-plugin-python2.x86_64          2.0.17.1-1.el7          @epel
+# uwsgi-plugin-python34.x86_64         2.0.17.1-1.el7          epel
+# uwsgi-plugin-python36.x86_64         2.0.17.1-1.el7          epel
+#
+package 'uwsgi-plugin-python2'
 
 directory '/etc/uwsgi' do
   owner 'uwsgi'
@@ -52,3 +59,4 @@ end
 service 'cobbler-svc' do
   action [:enable, :start]
 end
+# rubocop:enable Style/SymbolArray

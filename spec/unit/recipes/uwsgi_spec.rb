@@ -8,7 +8,7 @@ require 'spec_helper'
 
 describe 'cobblerd::uwsgi' do
   let(:packages) do
-    %w[uwsgi uwsgi-plugin-python]
+    %w[uwsgi uwsgi-plugin-python2]
   end
 
   platforms.each do |platform, details|
