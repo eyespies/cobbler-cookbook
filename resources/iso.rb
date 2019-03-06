@@ -17,7 +17,7 @@ property :target, kind_of: String, required: false, desired_state: false
 # Create Action
 action :download do
   # Mount the image and then cobbler import the image
-  dirname = ::File.dirname(target)
+  dirname = ::File.dirname(new_resource.target)
   directory dirname do
     owner 'root'
     group 'root'

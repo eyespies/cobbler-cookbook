@@ -49,9 +49,7 @@ action :create do
   command = "#{command} --distro='#{new_resource.distro}'"
   command = "#{command} --kickstart='#{new_resource.kickstart}'"
 
-  unless new_resource.kernel_options.empty?
-    command = "#{command} --kopts='#{new_resource.kernel_options.map { |k, v| "#{k}=#{v}" }.join(' ')}'"
-  end
+  command = "#{command} --kopts='#{new_resource.kernel_options.map { |k, v| "#{k}=#{v}" }.join(' ')}'" unless new_resource.kernel_options.empty?
 
   unless new_resource.kernel_options_postinstall.empty?
     kop = new_resource.kernel_options_postinstall.map { |k, v| "#{k}=#{v}" }.join(' ')
@@ -81,13 +79,13 @@ end
 
 action :delete do
   if exists?
-    profile_command = "cobbler profile remove --name='#{name}'"
+    profile_command = "cobbler profile remove --name='#{new_resource.name}'"
     bash "#{new_resource.name}-cobbler-profile-delete" do
       code profile_command
       notifies :run, 'bash[cobbler-sync]', :delayed
     end
 
-    kickstart_file = "/var/lib/cobbler/kickstarts/#{name}"
+    kickstart_file = "/var/lib/cobbler/kickstarts/#{new_resource.name}"
     file kickstart_file do
       action :delete
     end
@@ -198,7 +196,7 @@ action_class do
       Chef::Application.fatal!(msg)
     end
 
-    unless new_resource.nil? || breeds.include?(new_resource.os_breed) # rubocop:disable Style/GuardClause
+    unless new_resource.nil? || breeds.include?(os_breed) # rubocop:disable Style/GuardClause
       msg = "Invalid cobbler repo breed #{new_resource.os_breed} -- "
       msg += "must be one of #{breeds.join(',')}"
       Chef::Application.fatal!(msg)

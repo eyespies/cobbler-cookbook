@@ -44,13 +44,8 @@ action :create do
   validate_input
 
   unless exists?
-    unless architectures.include?(new_resource.architecture)
-      raise "The specified architecture (#{new_resource.architecture}) is not one of #{architectures.join(',')}"
-    end
-
-    unless breeds.include?(new_resource.os_breed)
-      raise "The specified breed (#{new_resource.os_breed}) is not one of #{breeds.join(',')}"
-    end
+    raise "The specified architecture (#{new_resource.architecture}) is not one of #{architectures.join(',')}" unless architectures.include?(new_resource.architecture)
+    raise "The specified breed (#{new_resource.os_breed}) is not one of #{breeds.join(',')}" unless breeds.include?(new_resource.os_breed)
 
     # TODO: Create a command builder library.
     # Setup command with known required attributes
@@ -69,29 +64,12 @@ action :create do
     distro_command = "#{distro_command} --uid='#{new_resource.uid}'" unless new_resource.uid.nil?
 
     # Using this style to avoid Rubocop 'Metrics/LineLength' complaint
-    unless new_resource.kernel_options.nil?
-      distro_command = "#{distro_command} --kopts='#{new_resource.kernel_options.join(',')}'"
-    end
-
-    unless new_resource.kernel_options_postinstall.nil?
-      distro_command = "#{distro_command} --kopts-post='#{new_resource.kernel_options_postinstall.join(',')}'"
-    end
-
-    unless new_resource.kickstart_meta.nil?
-      distro_command = "#{distro_command} --kickstart_meta='#{new_resource.kickstart_meta..join(',')}'"
-    end
-
-    unless new_resource.source_repos.nil?
-      distro_command = "#{distro_command} --source-repos='#{new_resource.source_repos.join(',')}'"
-    end
-
-    unless new_resource.tree_build_time.nil?
-      distro_command = "#{distro_command} --tree-build-time='#{new_resource.tree_build_time}'"
-    end
-
-    unless new_resource.mgmt_classes.nil?
-      distro_command = "#{distro_command} --mgmt-classes='#{new_resource.mgmt_classes.join(',')}'"
-    end
+    distro_command = "#{distro_command} --kopts='#{new_resource.kernel_options.join(',')}'" unless new_resource.kernel_options.nil?
+    distro_command = "#{distro_command} --kopts-post='#{new_resource.kernel_options_postinstall.join(',')}'" unless new_resource.kernel_options_postinstall.nil?
+    distro_command = "#{distro_command} --kickstart_meta='#{new_resource.kickstart_meta..join(',')}'" unless new_resource.kickstart_meta.nil?
+    distro_command = "#{distro_command} --source-repos='#{new_resource.source_repos.join(',')}'" unless new_resource.source_repos.nil?
+    distro_command = "#{distro_command} --tree-build-time='#{new_resource.tree_build_time}'" unless new_resource.tree_build_time.nil?
+    distro_command = "#{distro_command} --mgmt-classes='#{new_resource.mgmt_classes.join(',')}'" unless new_resource.mgmt_classes.nil?
 
     boot_files = []
     new_resource.boot_files.each do |k, v|
@@ -99,21 +77,10 @@ action :create do
     end
     distro_command = "#{distro_command} --boot-files='#{boot_files.join(',')}'" unless new_resource.boot_files.nil?
 
-    unless new_resource.fetchable_files.nil?
-      distro_command = "#{distro_command} --fetchable-files='#{new_resource.fetchable_files}'"
-    end
-
-    unless new_resource.template_files.nil?
-      distro_command = "#{distro_command} --template-files='#{new_resource.template_files}'"
-    end
-
-    unless new_resource.redhat_management_key.nil?
-      distro_command = "#{distro_command} --redhat-management-key='#{new_resource.redhat_management_key}'"
-    end
-
-    unless new_resource.redhat_management_server.nil?
-      distro_command = "#{distro_command} --redhat-management-server='#{new_resource.redhat_management_server}'"
-    end
+    distro_command = "#{distro_command} --fetchable-files='#{new_resource.fetchable_files}'" unless new_resource.fetchable_files.nil?
+    distro_command = "#{distro_command} --template-files='#{new_resource.template_files}'" unless new_resource.template_files.nil?
+    distro_command = "#{distro_command} --redhat-management-key='#{new_resource.redhat_management_key}'" unless new_resource.redhat_management_key.nil?
+    distro_command = "#{distro_command} --redhat-management-server='#{new_resource.redhat_management_server}'" unless new_resource.redhat_management_server.nil?
     distro_command = "#{distro_command} --clobber" if new_resource.clobber
 
     Chef::Log.debug "Will add new OS distro using the command '#{distro_command}'"
@@ -274,3 +241,4 @@ action_class do
   require 'etc'
   require 'digest'
 end
+# rubocop:enable Metrics/BlockLength

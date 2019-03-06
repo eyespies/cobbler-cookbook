@@ -30,7 +30,7 @@ property :yum_options, kind_of: Hash, required: false, desired_state: false, def
 # This is a standard ruby accessor, use this to set flags for current state.
 attr_accessor :exists
 
-action :create do # rubocop:disable Metrics/BlockLength
+action :create do
   validate_input
 
   # Setup command with known required attributes
@@ -42,42 +42,18 @@ action :create do # rubocop:disable Metrics/BlockLength
   repo_command = "#{repo_command} --mirror-locally=#{new_resource.mirror_locally}"
 
   # Parameters that are not required, add them only if they are specified.
-  unless new_resource.comment.nil?
-    repo_command = "#{repo_command} --comment='#{new_resource.comment}'"
-  end
+  repo_command = "#{repo_command} --comment='#{new_resource.comment}'" unless new_resource.comment.nil?
 
   # Only applicable for YUM based repositories
-  unless new_resource.rpm_list.nil? || new_resource.os_breed != 'yum'
-    repo_command = "#{repo_command} --rpm-list='#{new_resource.rpm_list.join(',')}'"
-  end
+  repo_command = "#{repo_command} --rpm-list='#{new_resource.rpm_list.join(',')}'" unless new_resource.rpm_list.nil? || new_resource.os_breed != 'yum'
 
-  unless new_resource.proxy_url.nil?
-    repo_command = "#{repo_command} --proxy='#{new_resource.proxy_url}'"
-  end
-
-  unless new_resource.apt_components.nil?
-    repo_command = "#{repo_command} --apt-components=#{new_resource.apt_components.join(',')}"
-  end
-
-  unless new_resource.apt_dist_names.nil?
-    repo_command = "#{repo_command} --apt-dists='#{new_resource.apt_dist_names}'"
-  end
-
-  unless new_resource.createrepo_flags.nil?
-    repo_command = "#{repo_command} --createrepo-flags='#{new_resource.createrepo_flags}'"
-  end
-
-  unless new_resource.env_variables.nil?
-    repo_command = "#{repo_command} --environment=#{new_resource.env_variables.join(',')}"
-  end
-
-  unless new_resource.priority.nil?
-    repo_command = "#{repo_command} --priority='#{new_resource.priority}'"
-  end
-
-  unless new_resource.yum_options.nil?
-    repo_command = "#{repo_command} --yumopts='#{new_resource.yum_options}'"
-  end
+  repo_command = "#{repo_command} --proxy='#{new_resource.proxy_url}'" unless new_resource.proxy_url.nil?
+  repo_command = "#{repo_command} --apt-components=#{new_resource.apt_components.join(',')}" unless new_resource.apt_components.nil?
+  repo_command = "#{repo_command} --apt-dists='#{new_resource.apt_dist_names}'" unless new_resource.apt_dist_names.nil?
+  repo_command = "#{repo_command} --createrepo-flags='#{new_resource.createrepo_flags}'" unless new_resource.createrepo_flags.nil?
+  repo_command = "#{repo_command} --environment=#{new_resource.env_variables.join(',')}" unless new_resource.env_variables.nil?
+  repo_command = "#{repo_command} --priority='#{new_resource.priority}'" unless new_resource.priority.nil?
+  repo_command = "#{repo_command} --yumopts='#{new_resource.yum_options}'" unless new_resource.yum_options.nil?
 
   repo_command = "#{repo_command} --clobber" if new_resource.clobber
 
@@ -94,10 +70,10 @@ end
 action :delete do
   if exists?
     # Setup command with known required attributes. Since only name is required to delete, that is all we're using.
-    repo_command = "cobbler repo remove --name=#{name}"
+    repo_command = "cobbler repo remove --name=#{new_resource.name}"
 
     Chef::Log.debug "Will delete existing repository using the command '#{repo_command}'"
-    bash "#{name}-cobbler-repo-delete" do
+    bash "#{new_resource.name}-cobbler-repo-delete" do
       code repo_command
       umask 0o0002
     end

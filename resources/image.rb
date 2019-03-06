@@ -115,8 +115,8 @@ end
 # Delete Action
 action :delete do
   if exists?
-    image_command = "cobbler image remove --name='#{name}'"
-    bash "#{name}-cobbler-image-delete" do
+    image_command = "cobbler image remove --name='#{new_resource.name}'"
+    bash "#{new_resource.name}-cobbler-image-delete" do
       code image_command
       umask 0o0002
     end
@@ -178,7 +178,7 @@ def dependencies?
     false
   else
     find_command = "cobbler distro find --name='#{fullname}' | grep '#{fullname}'"
-    Chef::Log.info("Searching for distro '#{fullname}-#{architecture}' using #{find_command}")
+    Chef::Log.info("Searching for distro '#{fullname}' using #{find_command}")
     distro_find = Mixlib::ShellOut.new(find_command)
     distro_find.run_command
     Chef::Log.debug("Standard out from 'distro list' is #{distro_find.stdout.chomp}")
@@ -196,7 +196,7 @@ end
 
 def load_cobbler_image
   retval = {}
-  config_file = ::File.join('/var/lib/cobbler/config/images.d/', "#{name}.json")
+  config_file = ::File.join('/var/lib/cobbler/config/images.d/', "#{new_resource.name}.json")
   if ::File.exist?(config_file)
     retval = JSON.parse(::File.read(config_file))
     retval['virt_auto_boot'] = 0 unless retval.key?('virt_auto_boot')
@@ -246,7 +246,7 @@ action_class do
     end
 
     unless new_resource.nil? || breeds.include?(new_resource.os_breed)
-      msg = "Invalid cobbler image breed #{new_resource.os_breed} -- "
+      msg = "Invalid cobbler image breed #{os_breed} -- "
       msg += "must be one of #{breeds.join(',')}"
       Chef::Application.fatal!(msg)
     end
@@ -255,3 +255,4 @@ action_class do
   require 'etc'
   require 'digest'
 end
+# rubocop:enable Style/GuardClause,Metrics/AbcSize

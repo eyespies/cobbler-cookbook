@@ -170,7 +170,7 @@ end
 action :delete do
   if exists?
     # Setup command with known required attributes. Since only name is required to delete, that is all we're using.
-    system_command = "cobbler system remove --name=#{name}"
+    system_command = "cobbler system remove --name=#{new_resource.name}"
 
     Chef::Log.debug "Will delete existing OS distro using the command '#{system_command}'"
     bash "#{name}-cobbler-distro-remove" do
@@ -258,24 +258,24 @@ end
 # Queries Cobbler to determine if a specific image exists.
 #------------------------------------------------------------
 def exists? # rubocop:disable Metrics/AbcSize
-  Chef::Log.debug("Checking if image '#{name}' already exists")
+  Chef::Log.debug("Checking if image '#{new_resource.name}' already exists")
   if name.nil?
     false
   else
-    find_command = "cobbler system find --name=#{name} | grep '#{name}'"
-    Chef::Log.debug("Searching for system '#{name}' using #{find_command}")
+    find_command = "cobbler system find --name=#{new_resource.name} | grep '#{new_resource.name}'"
+    Chef::Log.debug("Searching for system '#{new_resource.name}' using #{find_command}")
     system_find = Mixlib::ShellOut.new(find_command)
     system_find.run_command
     Chef::Log.debug("Standard out from 'system find' is #{system_find.stdout.chomp}")
 
     # True if the value in stdout matches our name
-    (system_find.stdout.chomp == name)
+    (system_find.stdout.chomp == new_resource.name)
   end
 end
 
 def load_cobbler_system
   retval = {}
-  config_file = ::File.join('/var/lib/cobbler/config/systems.d/', "#{name}.json")
+  config_file = ::File.join('/var/lib/cobbler/config/systems.d/', "#{new_resource.name}.json")
   if ::File.exist?(config_file)
     retval = JSON.parse(::File.read(config_file))
   else
