@@ -29,6 +29,7 @@ describe 'cobblerd::uwsgi' do
 
         it 'create the uwsgi configuration files' do
           expect(chef_run).to create_directory('/etc/uwsgi')
+          expect(chef_run).to create_directory('/run/uwsgi')
           expect(chef_run).to create_template('/etc/uwsgi/cobbler_web.ini')
           expect(chef_run).to create_template('/etc/uwsgi/cobbler_svc.ini')
 

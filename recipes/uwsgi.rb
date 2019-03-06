@@ -6,6 +6,14 @@
 # Copyright:: 2017, Specialty Manufacturing Company of South Carolina, All Rights Reserved
 package 'uwsgi'
 
+# Workaround for a seeming problem in UWSGI:
+# uwsgi: open("/run/uwsgi/uwsgi.pid"): No such file or directory [core/utils.c line 3613]
+directory '/run/uwsgi' do
+  owner 'uwsgi'
+  group 'uwsgi'
+  mode 0o0775
+end
+
 # TODO: Upgrade to Python 3.x? Example output (extraneous listings removed):
 # [root@cobbler-prod-01  ~] :) yum list | grep ^uwsgi-plugin-python
 # uwsgi-plugin-python2.x86_64          2.0.17.1-1.el7          @epel
