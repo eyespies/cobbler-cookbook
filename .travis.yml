@@ -8,7 +8,7 @@ cache: bundler
 # See https://github.com/dev-sec/chef-os-hardening/blob/master/.travis.yml for some advanced examples
 
 rvm:
-  - 2.3
+#  - 2.3
   - 2.4
 
 branches:
