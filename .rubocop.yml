@@ -1,6 +1,8 @@
 AllCops:
   Exclude:
     - 'Vagrantfile'
+    - vendor/**/*
+    - testing/vendor/**/*
   DisplayCopNames: true
   TargetRubyVersion: 2.4
 
