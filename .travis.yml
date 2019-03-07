@@ -24,7 +24,7 @@ matrix:
   fast_finish: true
 
 script:
-  -  bundle exec rake kitchen
+  -  bundle exec rake default
 
 matrix:
   include:

@@ -13,7 +13,7 @@ gem 'aws-sdk', '~> 2.11.0'
 gem 'inspec', '~> 2.2.0'
 
 group :test do
-  gem 'bundler', '~> 1'
+  gem 'bundler', '~> 2'
   gem 'gherkin', '~> 5.1.0'
   gem 'minitest', '~> 5.11.0'
   gem 'rake', '~> 12.3.0'
