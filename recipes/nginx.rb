@@ -49,3 +49,4 @@ end
 service 'nginx' do
   action [:enable, :start]
 end
+# rubocop:enable Style/SymbolArray
