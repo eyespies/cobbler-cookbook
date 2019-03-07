@@ -4,6 +4,7 @@ This file lists the changes made for each version of the cobblerd cookbook.
 ## Version 1.0.6
 - Justin Spies - (fix) workaround missing /run/uwsgi that is expected by /etc/uwsgi.ini
 - Justin Spies - (fix) support Chef 14 by ensuring all resources use new_resource. to access attributes
+- Justin Spies - (fix) force install of Django 1.6 to avoid ImportError: cannot import name TEMPLATE_CONTEXT_PROCESSORS
 
 ## Version 1.0.5
 - Justin Spies - (fix) specify correct version of the uwsgi-plugin-python package

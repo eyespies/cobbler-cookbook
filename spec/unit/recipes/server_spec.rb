@@ -8,7 +8,7 @@ require 'spec_helper'
 
 describe 'cobblerd::server' do
   let(:packages) do
-    %w[cobbler cobbler-web]
+    %w[python2-django16 cobbler cobbler-web]
   end
   platforms.each do |platform, details|
     versions = details['versions']

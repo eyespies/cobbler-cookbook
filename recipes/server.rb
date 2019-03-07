@@ -1,10 +1,15 @@
-# rubocop:disable Style/SymbolArray
 #
 # Cookbook:: cobblerd
 # Recipe:: server
 #
 # Copyright:: 2017, Justin Spies, All Rights Reserved
 #
+
+# Workaround on EL based systems for https://github.com/cobbler/cobbler/issues/1717; the default Django
+# from EPEL is now 1.11 in which TEMPLATE_CONTEXT_PROCESSORS was removed, so we must install Django 1.6
+# since there is a specific version available in EPEL. This must be done before installing cobbler
+# components otherwise the newer version of Django will be installed.
+package 'python2-django16'
 package 'cobbler'
 package 'cobbler-web'
 
@@ -48,6 +53,7 @@ ruby_block 'Write /etc/cobbler/users.digest' do
   notifies :restart, 'service[cobbler]', :delayed
 end
 
+# rubocop:disable Style/SymbolArray
 # Once Cobbler is running, notify Nginx to restart immediately so that calls to Nginx from the Cobbler CLI will work.
 service 'cobbler' do
   case node['platform']
@@ -58,3 +64,4 @@ service 'cobbler' do
   supports restart: true
   notifies :reload, 'service[nginx]', :immediately
 end
+# rubocop:enable Style/SymbolArray
