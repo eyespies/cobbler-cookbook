@@ -42,7 +42,7 @@ group :kitchen_common do
 end
 
 group :kitchen_vagrant do
-  gem 'kitchen-docker', '~> 2.7.0'
+  gem 'kitchen-docker', '~H> 2.7.0'
   gem 'kitchen-dokken', '~> 2.6.0'
   gem 'kitchen-vagrant', '~> 1.3.0'
 end

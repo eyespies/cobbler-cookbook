@@ -2,7 +2,7 @@
 sudo: required
 language: ruby
 bundler_args: "--without development"
-dist: trusty
+dist: xenial
 cache: bundler
 
 # See https://github.com/dev-sec/chef-os-hardening/blob/master/.travis.yml for some advanced examples
