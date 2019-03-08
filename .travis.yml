@@ -1,5 +1,4 @@
 ---
-sudo: required
 language: ruby
 bundler_args: "--without development"
 dist: xenial
@@ -8,8 +7,10 @@ cache: bundler
 # See https://github.com/dev-sec/chef-os-hardening/blob/master/.travis.yml for some advanced examples
 
 rvm:
-#  - 2.3
-  - 2.4
+  - 2.5
+
+services:
+  - docker
 
 branches:
   only:
@@ -20,15 +21,12 @@ builder_args: --jobs 7
 before_install:
   - gem update --system # see https://github.com/bundler/bundler/issues/5357
 
+script:
+  - bundle exec rake default
+
 matrix:
-  fast_finish: true
   include:
     - env: UNIT_AND_LINT=1
       script:
-        - rubocop --version
-        - gem list
-        - cat ~/rubocop.*
-        - pwd
-        - ls -latr
         - bundle exec rake default
 

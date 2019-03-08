@@ -4,7 +4,7 @@ AllCops:
     - vendor/**/*
     - testing/vendor/**/*
   DisplayCopNames: true
-  TargetRubyVersion: 2.4
+  TargetRubyVersion: 2.5
 
 AlignParameters:
   Enabled: false
@@ -30,3 +30,5 @@ Metrics/MethodLength:
 
 Metrics/BlockLength:
   Max: 35
+  Exclude:
+    - 'spec/**/*'
