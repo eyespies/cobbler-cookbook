@@ -25,12 +25,10 @@ matrix:
   include:
     - env: UNIT_AND_LINT=1
       script:
-        - bundle exec rake lint spec
+        - rubocop --version
+        - gem list
+        - cat ~/rubocop.*
+        - pwd
+        - ls -latr
+        - bundle exec rake default
 
-script:
-  - rubocop --version
-  - gem list
-  - cat ~/rubocop.*
-  - pwd
-  - ls -latr
-  - bundle exec rake default
