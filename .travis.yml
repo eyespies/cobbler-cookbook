@@ -22,12 +22,15 @@ before_install:
 
 matrix:
   fast_finish: true
-
-script:
-  -  bundle exec rake default
-
-matrix:
   include:
     - env: UNIT_AND_LINT=1
       script:
         - bundle exec rake lint spec
+
+script:
+  - rubocop --version
+  - gem list
+  - cat ~/rubocop.*
+  - pwd
+  - ls -latr
+  - bundle exec rake default
