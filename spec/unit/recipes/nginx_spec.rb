@@ -2,7 +2,7 @@
 # Cookbook:: cobblerd
 # Spec:: nginx
 #
-# Copyright:: 2017-2018, Phoenix Specialty Manufacturing Company, All Rights Reserved.
+# Copyright:: 2017-2019, Phoenix Specialty Manufacturing Company, All Rights Reserved.
 
 require 'spec_helper'
 
