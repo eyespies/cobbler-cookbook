@@ -10,8 +10,13 @@ driver:
     cpus: 1
 
 provisioner:
-  name: chef_zero
-  require_chef_omnibus: <%= ENV.has_key?('CHEF_VERSION') ? ENV['CHEF_VERSION'] : true %>
+  product_name: chef
+  product_version: "<%= ENV.has_key?('CHEF_VERSION') ? ENV['CHEF_VERSION'] : 14 %>"
+  # You may wish to disable always updating cookbooks in CI or other testing environments.
+  # For example:
+  #   always_update_cookbooks: <%= !ENV['CI'] %>
+  always_update_cookbooks: true
+  chef_license: accept
   # log_level: info
 
 platforms:
