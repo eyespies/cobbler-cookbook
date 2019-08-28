@@ -34,6 +34,7 @@ checksums.each do |vers, sha256| # rubocop:disable Metrics/BlockLength
 
   # The distros are dependent on the ISO having been downloaded, so get the ISOs setup here.
   cobbler_iso "iso-#{vers}" do
+    # TODO: Parmaeterize / centralize this option
     source "http://192.168.86.35/centos/6.9/isos/x86_64/#{source_file}"
     target "/data/isos/#{source_file}"
     checksum sha256
