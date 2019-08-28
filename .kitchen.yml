@@ -20,21 +20,13 @@ provisioner:
   # log_level: info
 
 platforms:
-  - name: ubuntu-12.04
-    provisioner:
-      environments_path: 'environments'
-      client_rb:
-        environment: 'chef11'
-    run_list:
-      - 'recipe[apt::default]'
-  - name: ubuntu-14.04
-    run_list:
-      - 'recipe[apt::default]'
-  - name: centos-7.3
-  - name: oracle-7.3
+  # - name: ubuntu-18.04
+  #   run_list:
+  #     - 'recipe[apt::default]'
+  - name: centos-7.6
+  - name: oracle-7.6
     driver_config:
-      box: bento/oracle-7.3
-
+      box: bento/oracle-7.6
 suites:
   - name: default
     run_list:
@@ -42,7 +34,7 @@ suites:
   - name: images
     run_list:
       - 'recipe[cobblerd::centos]'
-      - 'recipe[cobblerd::ubuntu]'
+      # - 'recipe[cobblerd::ubuntu]'
   - name: web
     run_list:
       - 'recipe[cobblerd::web]'
