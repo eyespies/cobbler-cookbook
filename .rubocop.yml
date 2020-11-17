@@ -1,24 +1,22 @@
 AllCops:
   Exclude:
     - 'Vagrantfile'
-    - vendor/**/*
-    - testing/vendor/**/*
   DisplayCopNames: true
-  TargetRubyVersion: 2.5
 
-AlignParameters:
+Layout/AlignParameters:
   Enabled: false
 
-Encoding:
+Style/Encoding:
   Enabled: false
 
-FrozenStringLiteralComment:
+# TODO: Enable this in the future.
+Style/FrozenStringLiteralComment:
   Enabled: false
 
-LineLength:
+Metrics/LineLength:
   Max: 180
 
-StringLiterals:
+Style/StringLiterals:
   Enabled: false
 
 Layout/SpaceBeforeFirstArg:
@@ -30,5 +28,3 @@ Metrics/MethodLength:
 
 Metrics/BlockLength:
   Max: 35
-  Exclude:
-    - 'spec/**/*'

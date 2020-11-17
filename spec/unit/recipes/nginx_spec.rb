@@ -38,7 +38,7 @@ describe 'cobblerd::nginx' do
         end
 
         it 'should create the DHPARAMS file' do
-          expect(chef_run).to create_dhparam_pem('/etc/dhparams.pem')
+          expect(chef_run).to create_openssl_dhparam('/etc/dhparams.pem')
         end
 
         it 'should create and enable the Nginx sites' do
@@ -84,7 +84,7 @@ describe 'cobblerd::nginx' do
         end
 
         it 'should create the DHPARAMS file' do
-          expect(chef_run).to create_dhparam_pem('/etc/dhparams.pem')
+          expect(chef_run).to create_openssl_dhparam('/etc/dhparams.pem')
         end
 
         it 'should create and enable the Nginx sites' do

@@ -1,7 +1,7 @@
 def platforms
   {
     'oracle' => {
-      'versions' => ['7.4']
+      'versions' => ['8.1']
     }
   }
 end

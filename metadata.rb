@@ -19,23 +19,16 @@ issues_url 'https://github.com/eyespies/cobbler-cookbook/issues' if respond_to?(
 # a Supermarket.
 source_url 'https://github.com/eyespies/cobbler-cookbook' if respond_to?(:source_url)
 
-depends 'apt'
+depends 'apt', '~> 7.2.0'
 # For RHEL 7 and later platforms
-depends 'nginx', '~> 7.0.0'
-# Used to generate dhparams.pem
-depends 'openssl', '~> 7.1.0'
+depends 'nginx', '~> 10.6'
 depends 'poise'
 depends 'yum-epel'
 
 %w[centos redhat].each do |name|
-  supports name, '~> 6.0'
-  supports name, '~> 7.0'
-end
-
-%w[12.04 14.04].each do |vers|
-  supports 'ubuntu', "= #{vers}"
+  supports name, '~> 8.0'
 end
 
 # Requires at least 12.11 (due to introduction of systemd_unit) but we make it 12.19 which includes updates
 # to systemd_unit.
-chef_version '>= 12.19' if respond_to?(:chef_version)
+chef_version '>= 15' if respond_to?(:chef_version)

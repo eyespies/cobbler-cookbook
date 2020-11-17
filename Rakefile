@@ -54,8 +54,8 @@ begin
   require 'github_changelog_generator/task'
   GitHubChangelogGenerator::RakeTask.new :changelog do |config|
     config.future_release = "v#{metadata.version}"
-    config.user = 'cobbler'
-    config.project = 'cobbler-cookbook'
+    config.user = 'dev-sec'
+    config.project = 'chef-os-hardening'
   end
 rescue LoadError
   puts '>>>>> GitHub Changelog Generator not loaded, omitting tasks'
@@ -67,6 +67,14 @@ task :kitchen do
   instance = ENV['INSTANCE'] || ''
   args = ENV['CI'] ? '--destroy=always' : ''
   sh('sh', '-c', "bundle exec kitchen test -c #{concurrency} #{args} #{instance}")
+end
+
+desc 'Run kitchen integration tests on AWS EC2'
+task :kitchen_ec2 do
+  concurrency = ENV['CONCURRENCY'] || 1
+  instance = ENV['INSTANCE'] || ''
+  args = ENV['CI'] ? '--destroy=always' : ''
+  sh('sh', '-c', "bundle exec kitchen test -l debug -c #{concurrency} #{args} #{instance}")
 end
 
 desc 'Prepare CI environment for DigitalOcean usage'
